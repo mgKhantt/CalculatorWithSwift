@@ -9,6 +9,9 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    
+    @IBOutlet var allButtons: [UIButton]!
+    
     @IBOutlet var displayLabel: UILabel!
     
     var currentNumber = ""
@@ -19,6 +22,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         displayLabel.text = "0"
+        
+        for buttons in allButtons {
+            buttons.layer.cornerRadius = 8
+        }
     }
 
     
@@ -33,6 +40,7 @@ class ViewController: UIViewController {
         if let operation = sender.titleLabel?.text {
             firstOperand = currentNumber
             currentNumber = ""
+            displayLabel.text = operation
             currentOperation = operation
         }
     }
@@ -41,9 +49,11 @@ class ViewController: UIViewController {
     @IBAction func equalPressed(_ sender: UIButton) {
         secondOperand = currentNumber
         
-        guard let firstValue = Double(firstOperand), let secondValue = Double(secondOperand), let operation = currentOperation else {
-                return
-            }
+        guard let firstValue = Double(firstOperand),
+              let secondValue = Double(secondOperand),
+              let operation = currentOperation else {
+            return
+        }
         
         var result : Double = 0
         
@@ -56,12 +66,14 @@ class ViewController: UIViewController {
             result = firstValue * secondValue
         case "÷":
             result = secondValue != 0 ? firstValue / secondValue : 0
+        case "%":
+            result = firstValue.truncatingRemainder(dividingBy: secondValue)
         default:
             break
         }
         
         displayLabel.text = String(result)
-        currentNumber = ""
+        currentNumber = String(result)
         firstOperand = ""
         secondOperand = ""
         currentOperation = nil
